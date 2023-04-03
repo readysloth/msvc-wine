@@ -132,11 +132,6 @@ RUN wget ${NINJA_URL} && \
     rm ${NINJA_ZIP}
 
 
-#ARG VISUAL_STUDIO_URL=https://github.com/readysloth/msvc-wine/releases/download/v0.0.1/vs-folder-14.0.zip
-#RUN wget ${VISUAL_STUDIO_URL} && \
-#    unzip -d ~/.wine/drive_c/"Program Files (x86)" vs-folder-14.0.zip && \
-#    rm vs-folder-14.0.zip
-
 ARG BASE_PROGRAM_FILES_URL=https://github.com/readysloth/msvc-wine/releases/download/v0.0.2
 ARG PROGRAM_FILES_ZIP=${BASE_PROGRAM_FILES_URL}/program_files.zip
 
@@ -169,3 +164,5 @@ RUN wget ${WOW6432_REG} ${MICROSOFT_REG1} ${MICROSOFT_REG2} && \
     cat xaa xab > microsoft.reg && \
     xvfb-run -a bash -c 'wine regedit.exe & x11vnc; wait $(jobs -p)' && \
     rm *.reg xa*
+
+RUN find ~/.wine -name 'vcvars*' -type f -print0 | xargs -0 sed -i s/@//g
