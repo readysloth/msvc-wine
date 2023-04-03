@@ -166,3 +166,9 @@ RUN wget ${WOW6432_REG} ${MICROSOFT_REG1} ${MICROSOFT_REG2} && \
     rm *.reg xa*
 
 RUN find ~/.wine -name 'vcvars*' -type f -print0 | xargs -0 sed -i s/@//g
+
+
+ARG JFROG_SCRIPT="iwr https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-cli-windows-amd64/jf.exe -OutFile $env:SYSTEMROOT\system32\jf.exe"
+RUN wget 'https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-cli-windows-amd64/jf.exe' \
+    -O ${MISC_TOOLS_PATH}/jf.exe && \
+    bash -c 'cp ${MISC_TOOLS_PATH}/{jf,jfrog}.exe'
