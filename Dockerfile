@@ -29,6 +29,9 @@ RUN dpkg --add-architecture i386 && \
 
 ENV DISPLAY=:0
 ENV WINEARCH=win64
+ARG WINE_START='wine cmd /c start /wait'
+ARG MSI_INSTALL='${WINE_START} msiexec /i'
+ARG MSI_INSTALL_OPTS='/quiet'
 
 RUN xvfb-run -a bash -c 'winecfg & x11vnc; wait $(jobs -p)'
 
@@ -38,46 +41,55 @@ RUN xvfb-run -a bash -c 'winetricks dotnetcore3 & x11vnc; wait $(jobs -p)'
 RUN xvfb-run -a bash -c 'winetricks dotnet48 & x11vnc; wait $(jobs -p)'
 RUN xvfb-run -a bash -c 'winecfg & x11vnc; wait $(jobs -p)'
 
+
+ARG BASE_REG_URL=https://github.com/readysloth/msvc-wine/raw/main/reg
+ARG WOW6432_REG=${BASE_REG_URL}/wow6432.reg
+
+ARG MICROSOFT_REG1=${BASE_REG_URL}/microsoft/xaa
+ARG MICROSOFT_REG2=${BASE_REG_URL}/microsoft/xab
+
+RUN wget ${WOW6432_REG} ${MICROSOFT_REG1} ${MICROSOFT_REG2} && \
+    cat xaa xab > microsoft.reg && \
+    xvfb-run -a bash -c '${WINE_START} regedit microsoft.reg' && \
+    xvfb-run -a bash -c '${WINE_START} regedit wow6432.reg' && \
+    rm *.reg xa*
+
+
 RUN wget ${POWERSHELL_URL} && \
-    xvfb-run -a bash -c 'wine msiexec /i ${POWERSHELL_MSI} & x11vnc; wait $(jobs -p)' && \
+    xvfb-run -a bash -c '${MSI_INSTALL} ${POWERSHELL_MSI} ${MSI_INSTALL_OPTS} ADD_PATH=1 USE_MU=0 ENABLE_MU=0' && \
     rm ${POWERSHELL_MSI}
 
 ENV WINEDEBUG=-all
 
 ARG CHOCOLATEY_INSTALL_SCRIPT="Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
 
-RUN xvfb-run -a bash -c "wineconsole pwsh -c \"${CHOCOLATEY_INSTALL_SCRIPT}\" & x11vnc; wait \$(jobs -p)"
-RUN xvfb-run -a bash -c 'wineconsole pwsh -c choco install -y --force nuget.commandline & x11vnc; wait $(jobs -p)'
-RUN xvfb-run -a bash -c 'wineconsole pwsh -c choco install -y --force asmspy & x11vnc; wait $(jobs -p)';
+RUN xvfb-run -a bash -c "wineconsole pwsh -c \"${CHOCOLATEY_INSTALL_SCRIPT}\""
+RUN xvfb-run -a bash -c 'wineconsole pwsh -c choco install -y --force nuget.commandline' || true
+RUN xvfb-run -a bash -c 'wineconsole pwsh -c choco install -y --force asmspy' || true
 
 ARG GIT_VER=2.40.0
 ARG GIT_EXE=Git-${GIT_VER}-64-bit.exe
 ARG GIT_URL=https://github.com/git-for-windows/git/releases/download/v${GIT_VER}.windows.1/${GIT_EXE}
+ARG GIT_INSTALL_OPTS='/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS="ext\shellhere,assoc,assoc_sh"'
 RUN wget ${GIT_URL} && \
-    xvfb-run -a bash -c 'wine ${GIT_EXE} & x11vnc' && \
+    xvfb-run -a bash -c '${WINE_START} ${GIT_EXE} ${GIT_INSTALL_OPTS}' && \
     rm ${GIT_EXE}
 
 
 ARG PYTHON_VER=3.10.10
 ARG PYTHON_EXE=python-${PYTHON_VER}-amd64.exe
 ARG PYTHON_URL=https://www.python.org/ftp/python/${PYTHON_VER}/${PYTHON_EXE}
+ARG PYTHON_INSTALL_OPTS='/quiet InstallAllUsers=1 CompileAll=1 Prepend'
 RUN wget ${PYTHON_URL} && \
-    xvfb-run -a bash -c 'wine ${PYTHON_EXE} & x11vnc; wait $(jobs -p)' && \
+    xvfb-run -a bash -c '${WINE_START} ${PYTHON_EXE} ${PYTHON_INSTALL_OPTS}' && \
     rm ${PYTHON_EXE}
-
-
-#ARG MSYS_EXE=msys2-x86_64-20230318.exe
-#ARG MSYS_URL=https://github.com/msys2/msys2-installer/releases/download/2023-03-18/${MSYS_EXE}
-#RUN wget ${MSYS_URL} && \
-#    xvfb-run -a bash -c 'wine ${MSYS_EXE} & x11vnc; wait $(jobs -p)' && \
-#    rm ${MSYS_EXE}
 
 
 ARG PERL_VER=5.32.1.1
 ARG PERL_MSI=strawberry-perl-${PERL_VER}-64bit.msi
 ARG PERL_URL=https://strawberryperl.com/download/${PERL_VER}/${PERL_MSI}
 RUN wget ${PERL_URL} && \
-    xvfb-run -a bash -c 'wine ${PERL_MSI} & x11vnc; wait $(jobs -p)' && \
+    xvfb-run -a bash -c '${MSI_INSTALL} ${PERL_MSI} ${MSI_INSTALL_OPTS}' && \
     rm ${PERL_MSI}
 
 
@@ -85,7 +97,7 @@ ARG CMAKE_VER=3.26.2
 ARG CMAKE_MSI=cmake-${CMAKE_VER}-windows-x86_64.msi
 ARG CMAKE_URL=https://github.com/Kitware/CMake/releases/download/v${CMAKE_VER}/${CMAKE_MSI}
 RUN wget ${CMAKE_URL} && \
-    xvfb-run -a bash -c 'wine ${CMAKE_MSI} & x11vnc; wait $(jobs -p)' && \
+    xvfb-run -a bash -c '${MSI_INSTALL} ${CMAKE_MSI} ${MSI_INSTALL_OPTS} ADD_CMAKE_TO_PATH=2' && \
     rm ${CMAKE_MSI}
 
 
@@ -100,7 +112,7 @@ RUN wget ${BUILDTOOLS_2015_URL} && \
 ARG NSIS_EXE=nsis-3.08-setup.exe
 ARG NSIS_URL=https://prdownloads.sourceforge.net/nsis/${NSIS_EXE}
 RUN wget ${NSIS_URL} && \
-    xvfb-run -a bash -c 'wine ${NSIS_EXE} & x11vnc; wait $(jobs -p)' && \
+    xvfb-run -a bash -c '${WINE_START} ${NSIS_EXE} /S /NCRC' && \
     rm ${NSIS_EXE}
 
 
@@ -153,17 +165,6 @@ RUN wget --content-disposition ${WDK_URL} && \
     xvfb-run -a bash -c 'wine ${WDK_EXE} & x11vnc; wait $(jobs -p)' && \
     rm ${WDK_EXE}
 
-
-ARG BASE_REG_URL=https://github.com/readysloth/msvc-wine/raw/main/reg
-ARG WOW6432_REG=${BASE_REG_URL}/wow6432.reg
-
-ARG MICROSOFT_REG1=${BASE_REG_URL}/microsoft/xaa
-ARG MICROSOFT_REG2=${BASE_REG_URL}/microsoft/xab
-
-RUN wget ${WOW6432_REG} ${MICROSOFT_REG1} ${MICROSOFT_REG2} && \
-    cat xaa xab > microsoft.reg && \
-    xvfb-run -a bash -c 'wine regedit.exe & x11vnc; wait $(jobs -p)' && \
-    rm *.reg xa*
 
 RUN find ~/.wine -name 'vcvars*' -type f -print0 | xargs -0 sed -i s/@//g
 
