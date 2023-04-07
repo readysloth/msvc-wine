@@ -2,11 +2,6 @@ FROM ubuntu:lunar
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-ARG POWERSHELL_VER=7.3.3
-ARG POWERSHELL_MSI=PowerShell-${POWERSHELL_VER}-win-x64.msi
-ARG POWERSHELL_URL=https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VER}/${POWERSHELL_MSI}
-
-
 RUN dpkg --add-architecture i386 && \
     apt update -y && \
     apt install -y wget && \
@@ -29,18 +24,22 @@ RUN dpkg --add-architecture i386 && \
 
 ENV DISPLAY=:0
 ENV WINEARCH=win64
-ARG WINE_START='wine cmd /c start /wait'
-ARG MSI_INSTALL='${WINE_START} msiexec /i'
-ARG MSI_INSTALL_OPTS='/quiet'
 
-RUN xvfb-run -a bash -c 'winecfg & x11vnc; wait $(jobs -p)'
+RUN winecfg
+RUN winetricks dotnetcore3
+RUN winetricks dotnet48
 
-RUN xvfb-run -a bash -c 'winetricks dotnetcore2 & x11vnc; wait $(jobs -p)'
-RUN xvfb-run -a bash -c 'winetricks dotnetcore3 & x11vnc; wait $(jobs -p)'
+ARG WINE_START="wine cmd /c start /wait"
+ARG WINE_END="wineserver --wait"
+ARG MSI_INSTALL="${WINE_START} msiexec /i"
+ARG MSI_INSTALL_OPTS="/qn /l* install.log"
 
-RUN xvfb-run -a bash -c 'winetricks dotnet48 & x11vnc; wait $(jobs -p)'
-RUN xvfb-run -a bash -c 'winecfg & x11vnc; wait $(jobs -p)'
 
+ARG WDK_URL=https://go.microsoft.com/fwlink/p/?LinkId=526733
+ARG WDK_EXE=wdksetup.exe
+RUN wget --content-disposition ${WDK_URL} && \
+    ${WINE_START} ${WDK_EXE} /quiet /installpath 'C:\Program Files (x86)\Windows Kits\10' && ${WINE_END} && \
+    rm ${WDK_EXE}
 
 ARG BASE_REG_URL=https://github.com/readysloth/msvc-wine/raw/main/reg
 ARG WOW6432_REG=${BASE_REG_URL}/wow6432.reg
@@ -48,48 +47,51 @@ ARG WOW6432_REG=${BASE_REG_URL}/wow6432.reg
 ARG MICROSOFT_REG1=${BASE_REG_URL}/microsoft/xaa
 ARG MICROSOFT_REG2=${BASE_REG_URL}/microsoft/xab
 
-RUN wget ${WOW6432_REG} ${MICROSOFT_REG1} ${MICROSOFT_REG2} && \
-    cat xaa xab > microsoft.reg && \
-    xvfb-run -a bash -c '${WINE_START} regedit microsoft.reg' && \
-    xvfb-run -a bash -c '${WINE_START} regedit wow6432.reg' && \
-    rm *.reg xa*
+#RUN wget ${WOW6432_REG} ${MICROSOFT_REG1} ${MICROSOFT_REG2} && \
+#    cat xaa xab > microsoft.reg && \
+#    ${WINE_START} regedit microsoft.reg && \
+#    ${WINE_START} regedit wow6432.reg && \
+#    rm *.reg xa*
 
-
+ARG POWERSHELL_VER=7.3.3
+ARG POWERSHELL_MSI=PowerShell-${POWERSHELL_VER}-win-x64.msi
+ARG POWERSHELL_URL=https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VER}/${POWERSHELL_MSI}
 RUN wget ${POWERSHELL_URL} && \
-    xvfb-run -a bash -c '${MSI_INSTALL} ${POWERSHELL_MSI} ${MSI_INSTALL_OPTS} ADD_PATH=1 USE_MU=0 ENABLE_MU=0' && \
+    ${MSI_INSTALL} ${POWERSHELL_MSI} ALL_USERS=1 ADD_PATH=1 USE_MU=0 ENABLE_MU=0 ${MSI_INSTALL_OPTS} && ${WINE_END} && \
     rm ${POWERSHELL_MSI}
-
-ENV WINEDEBUG=-all
+RUN winecfg && ${WINE_END}
 
 ARG CHOCOLATEY_INSTALL_SCRIPT="Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
 
-RUN xvfb-run -a bash -c "wineconsole pwsh -c \"${CHOCOLATEY_INSTALL_SCRIPT}\""
-RUN xvfb-run -a bash -c 'wineconsole pwsh -c choco install -y --force nuget.commandline' || true
-RUN xvfb-run -a bash -c 'wineconsole pwsh -c choco install -y --force asmspy' || true
-
-ARG GIT_VER=2.40.0
-ARG GIT_EXE=Git-${GIT_VER}-64-bit.exe
-ARG GIT_URL=https://github.com/git-for-windows/git/releases/download/v${GIT_VER}.windows.1/${GIT_EXE}
-ARG GIT_INSTALL_OPTS='/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS="ext\shellhere,assoc,assoc_sh"'
-RUN wget ${GIT_URL} && \
-    xvfb-run -a bash -c '${WINE_START} ${GIT_EXE} ${GIT_INSTALL_OPTS}' && \
-    rm ${GIT_EXE}
-
+RUN ${WINE_START} pwsh -c "${CHOCOLATEY_INSTALL_SCRIPT}" && ${WINE_END}
+RUN ${WINE_START} pwsh -c choco install -y --force nuget.commandline && ${WINE_END}
+RUN ${WINE_START} pwsh -c choco install -y --force asmspy && ${WINE_END}
 
 ARG PYTHON_VER=3.10.10
 ARG PYTHON_EXE=python-${PYTHON_VER}-amd64.exe
 ARG PYTHON_URL=https://www.python.org/ftp/python/${PYTHON_VER}/${PYTHON_EXE}
-ARG PYTHON_INSTALL_OPTS='/quiet InstallAllUsers=1 CompileAll=1 Prepend'
+ARG PYTHON_INSTALL_OPTS='/quiet InstallAllUsers=1 CompileAll=1 PrependPath=1'
 RUN wget ${PYTHON_URL} && \
-    xvfb-run -a bash -c '${WINE_START} ${PYTHON_EXE} ${PYTHON_INSTALL_OPTS}' && \
+    echo "${WINE_START} ${PYTHON_EXE} ${PYTHON_INSTALL_OPTS}" && \
+    ${WINE_START} ${PYTHON_EXE} ${PYTHON_INSTALL_OPTS} && ${WINE_END} && \
     rm ${PYTHON_EXE}
+
+
+ARG GIT_VER=2.40.0
+ARG GIT_EXE=Git-${GIT_VER}-64-bit.exe
+ARG GIT_URL=https://github.com/git-for-windows/git/releases/download/v${GIT_VER}.windows.1/${GIT_EXE}
+ARG GIT_INSTALL_OPTS='/VERYSILENT /NORESTART /NOCANCEL /SP- /ALLUSERS /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS="ext\shellhere,assoc,assoc_sh"'
+# Git hangs on post-install
+RUN wget ${GIT_URL} && \
+    ${WINE_START} ${GIT_EXE} ${GIT_INSTALL_OPTS} & sleep 5m && wineserver -k 9 && \
+    rm ${GIT_EXE}
 
 
 ARG PERL_VER=5.32.1.1
 ARG PERL_MSI=strawberry-perl-${PERL_VER}-64bit.msi
 ARG PERL_URL=https://strawberryperl.com/download/${PERL_VER}/${PERL_MSI}
 RUN wget ${PERL_URL} && \
-    xvfb-run -a bash -c '${MSI_INSTALL} ${PERL_MSI} ${MSI_INSTALL_OPTS}' && \
+    ${MSI_INSTALL} ${PERL_MSI} ${MSI_INSTALL_OPTS} && ${WINE_END} && \
     rm ${PERL_MSI}
 
 
@@ -97,22 +99,22 @@ ARG CMAKE_VER=3.26.2
 ARG CMAKE_MSI=cmake-${CMAKE_VER}-windows-x86_64.msi
 ARG CMAKE_URL=https://github.com/Kitware/CMake/releases/download/v${CMAKE_VER}/${CMAKE_MSI}
 RUN wget ${CMAKE_URL} && \
-    xvfb-run -a bash -c '${MSI_INSTALL} ${CMAKE_MSI} ${MSI_INSTALL_OPTS} ADD_CMAKE_TO_PATH=2' && \
+    ${MSI_INSTALL} ${CMAKE_MSI} ${MSI_INSTALL_OPTS} ADD_CMAKE_TO_PATH=2 && ${WINE_END} && \
     rm ${CMAKE_MSI}
 
 
-ARG MICROSOFT_URL=https://download.microsoft.com/download
-ARG BUILDTOOLS_2015=BuildTools_Full.exe
-ARG BUILDTOOLS_2015_URL=${MICROSOFT_URL}/E/E/D/EEDF18A8-4AED-4CE0-BEBE-70A83094FC5A/${BUILDTOOLS_2015}
-RUN wget ${BUILDTOOLS_2015_URL} && \
-    xvfb-run -a bash -c 'wine ${BUILDTOOLS_2015} & x11vnc; wait $(jobs -p)' && \
-    rm ${BUILDTOOLS_2015}
+#ARG MICROSOFT_URL=https://download.microsoft.com/download
+#ARG BUILDTOOLS_2015=BuildTools_Full.exe
+#ARG BUILDTOOLS_2015_URL=${MICROSOFT_URL}/E/E/D/EEDF18A8-4AED-4CE0-BEBE-70A83094FC5A/${BUILDTOOLS_2015}
+#RUN wget ${BUILDTOOLS_2015_URL} && \
+#    ${WINE_START} ${BUILDTOOLS_2015} && ${WINE_END} && \
+#    rm ${BUILDTOOLS_2015}
 
 
 ARG NSIS_EXE=nsis-3.08-setup.exe
 ARG NSIS_URL=https://prdownloads.sourceforge.net/nsis/${NSIS_EXE}
 RUN wget ${NSIS_URL} && \
-    xvfb-run -a bash -c '${WINE_START} ${NSIS_EXE} /S /NCRC' && \
+    ${WINE_START} ${NSIS_EXE} /S /NCRC && ${WINE_END} && \
     rm ${NSIS_EXE}
 
 
@@ -156,20 +158,13 @@ RUN wget ${PROGRAM_FILES_ZIP} ${PROGRAM_FILES_X86_ZIP1} ${PROGRAM_FILES_X86_ZIP2
     unzip program_filesx86.zip && \
     rm -v *.zip* && \
     cp -vr mnt/* ~/.wine/drive_c/ && \
-    rm -vrf mnt
-
-
-ARG WDK_URL=https://go.microsoft.com/fwlink/p/?LinkId=526733
-ARG WDK_EXE=wdksetup.exe
-RUN wget --content-disposition ${WDK_URL} && \
-    xvfb-run -a bash -c 'wine ${WDK_EXE} & x11vnc; wait $(jobs -p)' && \
-    rm ${WDK_EXE}
-
-
-RUN find ~/.wine -name 'vcvars*' -type f -print0 | xargs -0 sed -i s/@//g
+    rm -vrf mnt && \
+    find ~/.wine -name 'vcvars*' -type f -print0 | xargs -0 sed -i s/@//g
 
 
 ARG JFROG_SCRIPT="iwr https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-cli-windows-amd64/jf.exe -OutFile $env:SYSTEMROOT\system32\jf.exe"
 RUN wget 'https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-cli-windows-amd64/jf.exe' \
     -O ${MISC_TOOLS_PATH}/jf.exe && \
-    bash -c 'cp ${MISC_TOOLS_PATH}/{jf,jfrog}.exe'
+    bash -c "cp ${MISC_TOOLS_PATH}/{jf,jfrog}.exe"
+
+ENV WINEDEBUG=-all
