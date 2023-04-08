@@ -32,7 +32,7 @@ RUN winetricks dotnet48
 ARG WINE_START="wine cmd /c start /wait"
 ARG WINE_END="wineserver --wait"
 ARG MSI_INSTALL="${WINE_START} msiexec /i"
-ARG MSI_INSTALL_OPTS="/qn /l* install.log"
+ARG MSI_INSTALL_OPTS="/qn"
 
 
 ARG WDK_URL=https://go.microsoft.com/fwlink/p/?LinkId=526733
@@ -47,11 +47,14 @@ ARG WOW6432_REG=${BASE_REG_URL}/wow6432.reg
 ARG MICROSOFT_REG1=${BASE_REG_URL}/microsoft/xaa
 ARG MICROSOFT_REG2=${BASE_REG_URL}/microsoft/xab
 
-#RUN wget ${WOW6432_REG} ${MICROSOFT_REG1} ${MICROSOFT_REG2} && \
-#    cat xaa xab > microsoft.reg && \
-#    ${WINE_START} regedit microsoft.reg && \
-#    ${WINE_START} regedit wow6432.reg && \
-#    rm *.reg xa*
+ARG FULL_REG1=${BASE_REG_URL}/local_machine/only_changed/xaa
+ARG FULL_REG2=${BASE_REG_URL}/local_machine/only_changed/xab
+
+RUN wget ${FULL_REG1} ${FULL_REG2} && \
+    cat xaa xab > full.reg && \
+    ${WINE_START} regedit full.reg && \
+    ${WINE_END} && \
+    rm *.reg xa*
 
 ARG POWERSHELL_VER=7.3.3
 ARG POWERSHELL_MSI=PowerShell-${POWERSHELL_VER}-win-x64.msi
@@ -99,16 +102,8 @@ ARG CMAKE_VER=3.26.2
 ARG CMAKE_MSI=cmake-${CMAKE_VER}-windows-x86_64.msi
 ARG CMAKE_URL=https://github.com/Kitware/CMake/releases/download/v${CMAKE_VER}/${CMAKE_MSI}
 RUN wget ${CMAKE_URL} && \
-    ${MSI_INSTALL} ${CMAKE_MSI} ${MSI_INSTALL_OPTS} ADD_CMAKE_TO_PATH=2 && ${WINE_END} && \
+    ${MSI_INSTALL} ${CMAKE_MSI} ADD_CMAKE_TO_PATH=System ${MSI_INSTALL_OPTS} && ${WINE_END} && \
     rm ${CMAKE_MSI}
-
-
-#ARG MICROSOFT_URL=https://download.microsoft.com/download
-#ARG BUILDTOOLS_2015=BuildTools_Full.exe
-#ARG BUILDTOOLS_2015_URL=${MICROSOFT_URL}/E/E/D/EEDF18A8-4AED-4CE0-BEBE-70A83094FC5A/${BUILDTOOLS_2015}
-#RUN wget ${BUILDTOOLS_2015_URL} && \
-#    ${WINE_START} ${BUILDTOOLS_2015} && ${WINE_END} && \
-#    rm ${BUILDTOOLS_2015}
 
 
 ARG NSIS_EXE=nsis-3.08-setup.exe
@@ -159,6 +154,10 @@ RUN wget ${PROGRAM_FILES_ZIP} ${PROGRAM_FILES_X86_ZIP1} ${PROGRAM_FILES_X86_ZIP2
     rm -v *.zip* && \
     cp -vr mnt/* ~/.wine/drive_c/ && \
     rm -vrf mnt && \
+    rm -vrf ~/.wine/drive_c/windows/Installer/* && \
+    find ~/'.wine/drive_c/' -name '*.vsix' -type d -print0 | xargs -0 rm -vrf && \
+    find ~/'.wine/drive_c/Program Files (x86)/Windows Kits/10/Lib' -name 'arm*' -type d -print0 | xargs -0 rm -vrf && \
+    find ~/'.wine/drive_c/Program Files (x86)/Microsoft Visual Studio 14.0' -name 'arm*' -type d -print0 | xargs -0 rm -vrf && \
     find ~/.wine -name 'vcvars*' -type f -print0 | xargs -0 sed -i s/@//g
 
 
