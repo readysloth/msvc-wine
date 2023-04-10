@@ -26,8 +26,11 @@ ENV DISPLAY=:0
 ENV WINEARCH=win64
 
 RUN winecfg
-RUN winetricks dotnetcore3
-RUN winetricks dotnet48
+RUN winetricks -q -f dotnetcore3
+RUN winetricks -q -f dotnetcoredesktop3
+RUN winetricks -q -f dotnet48
+RUN winetricks -q -f vcrun6
+RUN winetricks -q -f mfc42
 
 ARG WINE_START="wine cmd /c start /wait"
 ARG WINE_END="wineserver --wait"
@@ -50,9 +53,12 @@ ARG MICROSOFT_REG2=${BASE_REG_URL}/microsoft/xab
 ARG FULL_REG1=${BASE_REG_URL}/local_machine/only_changed/xaa
 ARG FULL_REG2=${BASE_REG_URL}/local_machine/only_changed/xab
 
-RUN wget ${FULL_REG1} ${FULL_REG2} && \
+ARG FUSION_PATCH_REG=${BASE_REG_URL}/local_machine/only_changed/fusion.patch.reg
+
+RUN wget ${FULL_REG1} ${FULL_REG2} ${FUSION_PATCH_REG} && \
     cat xaa xab > full.reg && \
     ${WINE_START} regedit full.reg && \
+    ${WINE_START} regedit fusion.patch.reg && \
     ${WINE_END} && \
     rm *.reg xa*
 
