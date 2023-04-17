@@ -19,6 +19,7 @@ RUN dpkg --add-architecture i386 && \
                    wget \
                    unzip \
                    file \
+                   dos2unix \
                    vim \
                    less && \
   wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks && \
@@ -35,6 +36,7 @@ ARG CLEANUP_DIRS="/root/.wine/drive_c/users/root/Temp/ /win_pkg_cache"
 ARG CLEANUP="find -L ${CLEANUP_DIRS} -maxdepth 1 -mindepth 1 -exec rm -vrf {} ;"
 ARG MSI_INSTALL="${WINE_START} msiexec /i"
 ARG MSI_INSTALL_OPTS="/qn"
+ARG PATH_REGISTRY_KEY="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
 
 RUN WINEDLLOVERRIDES=mscoree=d wineboot && ${WINE_END} && \
     ln -s "/root/.wine/drive_c/ProgramData/Package Cache" /win_pkg_cache && \
@@ -116,7 +118,13 @@ RUN wget ${BUILDTOOLS_2015_URL} && \
     find ~/'.wine/drive_c/' -name '*.vsix' -type d -print0 | xargs -0 rm -vrf; \
     find ~/'.wine/drive_c/Program Files (x86)/Windows Kits/10/Lib' -name 'arm*' -type d -print0 | xargs -0 rm -vrf; \
     find ~/'.wine/drive_c/Program Files (x86)/Microsoft Visual Studio 14.0' -name 'arm*' -type d -print0 | xargs -0 rm -vrf; \
-    find ~/.wine -name 'vcvars*' -type f -print0 | xargs -0 sed -i s/@//g || true
+    find ~/.wine -name 'vcvars*' -type f -print0 | xargs -0 sed -i s/@//g ; \
+    WIN_PATH="$(${WINE_START} reg query "${PATH_REGISTRY_KEY}" /v Path | dos2unix | grep -i PATH | awk -F'REG_EXPAND_SZ *' '{print $2}')" \
+    ${WINE_START} reg add "${PATH_REGISTRY_KEY}"\
+                          /v Path \
+                          /t REG_EXPAND_SZ \
+                          /d "${WIN_PATH};C:\\Program Files (x86)\\MSBuild\\14.0\\Bin\\amd64" /f && \
+    ${WINE_END} && ${CLEANUP}
 
 
 ARG LLVM_VER=16.0.0
@@ -126,13 +134,20 @@ ARG LLVM_INSTALL_OPTS="/S"
 RUN wget ${LLVM_URL} && \
     echo "${WINE_START} ${LLVM_EXE} ${LLVM_INSTALL_OPTS}" && \
     ${WINE_START} ${LLVM_EXE} ${LLVM_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
+    WIN_PATH="$(${WINE_START} reg query "${PATH_REGISTRY_KEY}" /v Path | dos2unix | grep -i PATH | awk -F'REG_EXPAND_SZ *' '{print $2}')" \
+    ${WINE_START} reg add "${PATH_REGISTRY_KEY}"\
+                          /v Path \
+                          /t REG_EXPAND_SZ \
+                          /d "${WIN_PATH};C:\\Program Files\\LLVM\\bin" /f && \
+    ${WINE_END} && \
+    ln -s ~/.wine/drive_c/Program\ Files/LLVM/bin/clang-cl.exe ~/.wine/drive_c/Program\ Files/LLVM/bin/cl.exe && \
     rm ${LLVM_EXE}
 
 
 ARG PYTHON_VER=3.10.10
 ARG PYTHON_EXE=python-${PYTHON_VER}-amd64.exe
 ARG PYTHON_URL=https://www.python.org/ftp/python/${PYTHON_VER}/${PYTHON_EXE}
-ARG PYTHON_INSTALL_OPTS='/quiet InstallAllUsers=1 CompileAll=1 PrependPath=1'
+ARG PYTHON_INSTALL_OPTS='/quiet InstallAllUsers=1 CompileAll=1 PrependPath=1 Include_launcher=1'
 RUN wget ${PYTHON_URL} && \
     echo "${WINE_START} ${PYTHON_EXE} ${PYTHON_INSTALL_OPTS}" && \
     ${WINE_START} ${PYTHON_EXE} ${PYTHON_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
@@ -145,7 +160,7 @@ ARG GIT_URL=https://github.com/git-for-windows/git/releases/download/v${GIT_VER}
 ARG GIT_INSTALL_OPTS='/VERYSILENT /NORESTART /NOCANCEL /SP- /ALLUSERS /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS="ext\shellhere,assoc,assoc_sh"'
 # Git hangs on post-install
 RUN wget ${GIT_URL} && \
-    ${WINE_START} ${GIT_EXE} ${GIT_INSTALL_OPTS} & sleep 5m && wineserver -k 9 && \
+    timeout 5m ${WINE_START} ${GIT_EXE} ${GIT_INSTALL_OPTS}; wineserver -k 9 && \
     rm ${GIT_EXE}
 
 
@@ -206,6 +221,17 @@ ARG W64DEVKIT_URL=https://github.com/skeeto/w64devkit/releases/download/v${W64DE
 RUN wget ${W64DEVKIT_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${W64DEVKIT_ZIP} && \
     rm ${W64DEVKIT_ZIP}
+
+
+ARG DNSPY_VER=6.3.0
+ARG DNSPY_ZIP=dnSpy-net-win64.zip
+ARG DNSPY_URL=https://github.com/dnSpyEx/dnSpy/releases/download/v${DNSPY_VER}/${DNSPY_ZIP}
+RUN wget ${DNSPY_URL} && \
+    unzip -d ${MISC_TOOLS_PATH} ${DNSPY_ZIP} && \
+    rm ${DNSPY_ZIP}
+
+
+RUN ${WINE_START} pip install cmake-converter && ${WINE_END}
 
 
 ARG JFROG_SCRIPT="iwr https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-cli-windows-amd64/jf.exe -OutFile $env:SYSTEMROOT\system32\jf.exe"
