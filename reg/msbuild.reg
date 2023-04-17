@@ -1,0 +1,245 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\14.0]
+"DefaultToolsVersion"="2.0"
+"MSBuildOverrideTasksPath"="C:\\Program Files (x86)\\MSBuild\\14.0\\bin\\amd64\\"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\4.0]
+"DefaultToolsVersion"="2.0"
+"MSBuildOverrideTasksPath"="C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0]
+"MSBuildToolsPath"="C:\\Program Files (x86)\\MSBuild\\14.0\\bin\\amd64\\"
+"MSBuildToolsPath32"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\MSBuild\\ToolsVersions\\14.0@MSBuildToolsPath)"
+"MSBuildToolsRoot"="C:\\Program Files (x86)\\MSBuild\\"
+"MSBuildFrameworkToolsPath"="C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\"
+"MSBuildFrameworkToolsPath32"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\MSBuild\\ToolsVersions\\14.0@MSBuildFrameworkToolsPath)"
+"MSBuildFrameworkToolsRoot"="C:\\Windows\\Microsoft.NET\\Framework64\\"
+"MSBuildRuntimeVersion"="4.0.30319"
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A@InstallationFolder)"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V140\\'))"
+"VCTargetsPath10"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath10)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+"VCTargetsPath11"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath11)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+"VCTargetsPath12"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath12)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V120\\'))"
+"VCTargetsPath14"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath14)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V140\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0\10.0]
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0\11.0]
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A@InstallationFolder)"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+"WindowsSDK80Path"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0@InstallationFolder)"
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+"VCTargetsPath10"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath10)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+"VCTargetsPath11"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath11)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0\12.0]
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V120\\'))"
+"VCTargetsPath10"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath10)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+"VCTargetsPath11"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath11)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+"VCTargetsPath12"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath12)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V120\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0\14.0]
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\NETFXSDK\\4.6@InstallationFolder)"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\NETFXSDK\\4.6\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+"WindowsSDK80Path"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.1@InstallationFolder)"
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V140\\'))"
+"VCTargetsPath10"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath10)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+"VCTargetsPath11"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath11)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+"VCTargetsPath12"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath12)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V120\\'))"
+"VCTargetsPath14"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath14)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V140\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0]
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A@InstallationFolder)"
+"MSBuildRuntimeVersion"="4.0.30319"
+"MSBuildToolsPath"="C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\"
+"MSBuildToolsPath32"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\MSBuild\\ToolsVersions\\4.0@MSBuildToolsPath)"
+"MSBuildToolsRoot"="C:\\Windows\\Microsoft.NET\\Framework64\\"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0\11.0]
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A@InstallationFolder)"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+"WindowsSDK80Path"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0@InstallationFolder)"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\14.0]
+"DefaultToolsVersion"="2.0"
+"MSBuildOverrideTasksPath"="C:\\Program Files (x86)\\MSBuild\\14.0\\bin\\"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\4.0]
+"DefaultToolsVersion"="2.0"
+"MSBuildOverrideTasksPath"="C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\ToolsVersions]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\ToolsVersions\14.0]
+"MSBuildToolsPath"="C:\\Program Files (x86)\\MSBuild\\14.0\\bin\\"
+"MSBuildToolsPath32"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\MSBuild\\ToolsVersions\\14.0@MSBuildToolsPath)"
+"MSBuildToolsRoot"="C:\\Program Files (x86)\\MSBuild\\"
+"MSBuildFrameworkToolsPath"="C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\"
+"MSBuildFrameworkToolsPath32"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\MSBuild\\ToolsVersions\\14.0@MSBuildFrameworkToolsPath)"
+"MSBuildFrameworkToolsRoot"="C:\\Windows\\Microsoft.NET\\Framework\\"
+"MSBuildRuntimeVersion"="4.0.30319"
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A@InstallationFolder)"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V140\\'))"
+"VCTargetsPath10"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath10)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+"VCTargetsPath11"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath11)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+"VCTargetsPath12"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath12)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V120\\'))"
+"VCTargetsPath14"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath14)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V140\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\ToolsVersions\14.0\10.0]
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\ToolsVersions\14.0\11.0]
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A@InstallationFolder)"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+"WindowsSDK80Path"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.0@InstallationFolder)"
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+"VCTargetsPath10"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath10)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+"VCTargetsPath11"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath11)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\ToolsVersions\14.0\12.0]
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V120\\'))"
+"VCTargetsPath10"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath10)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+"VCTargetsPath11"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath11)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+"VCTargetsPath12"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath12)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V120\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\ToolsVersions\14.0\14.0]
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\NETFXSDK\\4.6@InstallationFolder)"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\NETFXSDK\\4.6\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+"WindowsSDK80Path"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.1@InstallationFolder)"
+"VCTargetsPath"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V140\\'))"
+"VCTargetsPath10"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath10)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\'))"
+"VCTargetsPath11"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath11)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V110\\'))"
+"VCTargetsPath12"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath12)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V120\\'))"
+"VCTargetsPath14"="$([MSBuild]::ValueOrDefault('$(VCTargetsPath14)','$(MSBuildExtensionsPath32)\\Microsoft.Cpp\\v4.0\\V140\\'))"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\ToolsVersions\4.0]
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A@InstallationFolder)"
+"MSBuildRuntimeVersion"="4.0.30319"
+"MSBuildToolsPath"="C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\"
+"MSBuildToolsPath32"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\MSBuild\\ToolsVersions\\4.0@MSBuildToolsPath)"
+"MSBuildToolsRoot"="C:\\Windows\\Microsoft.NET\\Framework\\"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v7.0A\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\MSBuild\ToolsVersions\4.0\11.0]
+"FrameworkSDKRoot"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A@InstallationFolder)"
+"SDK35ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx35Tools-x86@InstallationFolder)"
+"SDK40ToolsPath"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.0A\\WinSDK-NetFx40Tools-x86@InstallationFolder)"
+"WindowsSDK80Path"="$(Registry:HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v8.0@InstallationFolder)"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows Kits]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\CEIP]
+"OptIn"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Products]
+"{5A3D81EC-D870-9ECF-D997-24BDA6644752}"="Windows Software Development Kit x86"
+"{A1CB8286-CFB3-A985-D799-721A0F2A27F3}"="Windows Software Development Kit DirectX x86 Remote x86"
+"{7BCA9793-3B61-49BC-2BB0-62B671E94B60}"="Windows Software Development Kit for Windows Store Apps x86"
+"{D9773F53-5C6F-10F8-FC4B-9C103C9082AB}"="Windows Software Development Kit for Windows Store Apps DirectX x86 Remote x86"
+"{0610DFB0-CCEA-6EC0-E3C3-A0160AD7FD98}"="Windows Runtime Intellisense Content - en-us x86"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots]
+"{ABD37F71-FC3F-F525-C7B3-BDD95F684C51}"="Universal CRT Headers Libraries and Sources x86"
+"KitsRoot10"="C:\\Program Files (x86)\\Windows Kits\\10\\"
+"{284FA9A0-CEDD-81D3-5A19-5858E95FD0C4}"="Universal CRT Extension SDK x86"
+"KitsRoot81"="C:\\Program Files (x86)\\Windows Kits\\8.1\\"
+"{8BFBEC30-33CC-13B4-849F-3B036F27466A}"="Universal CRT Headers Libraries and Sources x86"
+"{1FBCBC17-4527-2340-0832-B1D49C41FF67}"="Universal CRT Extension SDK x86"
+"{73CC63E2-295E-8012-133D-5643B92D30CC}"="WPTx64 x86"
+"WindowsDebuggersRoot10"="C:\\Program Files (x86)\\Windows Kits\\10\\Debuggers\\"
+"{02FCB4B3-4E38-2875-3C49-97DCE76BBFA9}"="WPT Redistributables x86"
+"{905D1773-308E-B34B-7489-1E1557BF0AF4}"="SDK Debuggers x86"
+"{84645792-B4DC-8386-13D6-94810C42EF8A}"="Kits Configuration Installer x86"
+"{1683CCC3-D41C-C74B-E8DB-367BDDBE9CD5}"="Windows App Certification Kit SupportedApiList x86 x86"
+"{BDF6FA45-E9DC-6490-C02B-5B0FC19E6EB2}"="Windows App Certification Kit x64 x86"
+"{7FA1A25B-79CC-73D1-45C4-18420F205406}"="MSI Development Tools x86"
+"{810B251F-3A05-09FA-E1EE-FDB4CF74A811}"="Windows SDK x86"
+"{09672816-7915-EE76-B099-988C6364B44D}"="Windows SDK Desktop Tools x86"
+"{67870EE8-8CC4-B42D-365A-2A418463CEC8}"="Windows SDK for Windows Store Apps x86"
+"{FACD94AC-D254-726D-F9ED-7F683F92983D}"="Windows SDK for Windows Store Apps Tools x86"
+"{0526C301-7A7D-D4F0-0495-288FDC476791}"="Windows SDK Redistributables x86"
+"{EFBD94C0-5071-E452-F587-7537A9B295D3}"="Windows SDK DirectX x86 Remote x86"
+"{3F8C0DF2-07F3-DA78-898C-8BE81EEA0E42}"="Windows SDK for Windows Store Apps DirectX x86 Remote x86"
+"{DA52B326-3A74-1EB4-A788-D812C2F100A8}"="Universal CRT Redistributable x86"
+"{0C8D9D70-FA5A-4CA9-763F-D8D93BC099B5}"="Universal CRT Tools x86 x86"
+"{23909757-D6F0-7F7C-BD34-7E72BA9BD59C}"="WinRT Intellisense UAP - en-us x86"
+"{D3A337CD-EA32-F4BA-03FA-825903190C92}"="WinRT Intellisense UAP - Other Languages x86"
+"{A249F631-CEBC-EDCB-4C49-700E551E66CA}"="WinRT Intellisense Desktop - en-us x86"
+"{E71CB7F1-3E88-4450-1764-B3CC1E205C4A}"="WinRT Intellisense Desktop - Other Languages x86"
+"{C49E6FDA-8196-0CAF-2CDD-CF1B0F4EA5AD}"="WinRT Intellisense IoT - en-us x86"
+"{33D11371-82A5-852B-CDE2-5528CE406151}"="WinRT Intellisense IoT - Other Languages x86"
+"{FB431EE2-C835-6DE9-8DC3-C8FCDE028FE0}"="WinRT Intellisense PPI - en-us x86"
+"{FB82399D-9C48-9AF5-DCA1-CFE61BCA70A6}"="WinRT Intellisense PPI - Other Languages x86"
+"{C9966D24-DB2F-8514-EAA3-BEED85F3E166}"="WinAppDeploy x86"
+"{DCB6A7ED-396D-6047-D21D-972AD0F765D0}"="Windows IP Over USB x86"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots\10.0.14393.0]
+"{93441341-38A9-4EA1-72D4-9F2A1833498F}"="Windows SDK EULA x86"
+"KitsRoot10"="C:\\Program Files (x86)\\Windows Kits\\10\\"
+"{ADF8753A-915E-A57E-6DF8-2FD7961507FA}"="Windows SDK Desktop Headers Libs Metadata x86"
+"{3CEBA631-440C-385D-F3E0-A8B23E9973D6}"="Windows SDK Modern Versioned Developer Tools x86"
+"{970B61DE-43FE-4D47-4E1B-9BD0BA86825E}"="Windows SDK for Windows Store Apps Headers Libs x86"
+"{D7F9E8AA-DF85-7816-A805-EA2C686A8EF8}"="Windows SDK for Windows Store Apps Contracts x86"
+"{233B73D9-650E-9CEC-1002-767C916C1B61}"="Universal CRT Headers Libraries and Sources x86"
+"{8C572A40-31F4-E963-4D0D-EE59ADFA8589}"="Windows IoT Extension SDK Contracts x86"
+"{59399776-575D-9C54-E861-0D5EAB7E707D}"="Windows IoT Extension SDK x86"
+"{F2EB74A7-148A-8DC9-82A5-B5A88093EEC4}"="Universal General MIDI DLS Extension SDK x86"
+"{CE580CA9-68CE-F743-C36E-1ED94C7CA2C7}"="Windows Team Extension SDK x86"
+"{C5D77B76-409E-D349-93F6-7B157EB80B67}"="Windows Team Extension SDK Contracts x86"
+"{4E8F20FD-6BC7-B65C-D4F2-5D7CEDE3352E}"="Universal CRT Extension SDK x86"
+"{53C2E000-3774-D333-D543-A0BFE8B83636}"="Windows Desktop Extension SDK Contracts x86"
+"{137DE25F-7C3C-DEFE-C45B-990088714B67}"="Windows Desktop Extension SDK x86"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots\10.0.22000.0]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots\10.0.22000.0\Installed Options]
+"OptionId.KitsConfiguration"=dword:00000001
+"OptionId.WindowsSoftwareLogoToolkit"=dword:00000001
+"OptionId.WindowsSDKEULA"=dword:00000001
+"OptionId.MSIInstallTools"=dword:00000001
+"OptionId.SigningTools"=dword:00000001
+"OptionId.UWPManaged"=dword:00000001
+"OptionId.UWPCPP"=dword:00000001
+"OptionId.UWPLocalized"=dword:00000001
+"OptionId.DesktopCPPx86"=dword:00000001
+"OptionId.DesktopCPPx64"=dword:00000001
+"OptionId.DesktopCPParm"=dword:00000001
+"OptionId.DesktopCPParm64"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots]
+"KitsRoot10"="C:\\Program Files (x86)\\Windows Kits\\10\\"
+"KitsRoot81"="C:\\Program Files (x86)\\Windows Kits\\8.1\\"
+"AppVerifier64BitAutomationRoot"="C:\\Program Files\\Application Verifier\\"
+"{AB5E83C8-0175-0A1F-338A-EB8925AFC341}"="Application Verifier x64 External Package x64"
+"{22C4BBB3-D7FD-6725-CAE2-453F5D13E9BA}"="Windows App Certification Kit Native Components x64"
+"AppVerifier32BitAutomationRoot"="C:\\Program Files\\Application Verifier\\"
+"{1D823C99-3D03-F629-C9ED-5E6D90387B51}"="Windows SDK DirectX x64 Remote x64"
+"{1136A3C1-6ABF-12ED-EC50-76CED941DC95}"="Windows SDK for Windows Store Apps DirectX x64 Remote x64"
+"{BF8547E5-1066-30AE-F3CB-028DC61A7D01}"="Universal CRT Tools x64 x64"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots\10.0.22000.0]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots\10.0.22000.0\Installed Options]
+"OptionId.WindowsSoftwareLogoToolkit"=dword:00000001
+"OptionId.UWPManaged"=dword:00000001
+"OptionId.UWPCPP"=dword:00000001
