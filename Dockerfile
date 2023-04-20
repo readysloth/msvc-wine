@@ -21,7 +21,9 @@ RUN dpkg --add-architecture i386 && \
                    file \
                    dos2unix \
                    vim \
-                   less && \
+                   less \
+                   locales \
+                   locales-all && \
   wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks && \
   chmod +x winetricks && \
   mv winetricks /usr/bin
@@ -58,14 +60,16 @@ RUN mkdir ${MISC_TOOLS_PATH}
 
 
 ARG EWDK_WIN_PATH="${WIN_MISC_TOOLS_PATH}\EWDK"
-ARG EWDK_SDK_DIR_WIN_PATH="${EWDK_WIN_PATH}\Program Files\Windows Kits\10"
-ARG EWDK_BASE_INCLUDE_PATH="${EWDK_SDK_DIR_WIN_PATH}\Include\${SDK_WDK_VERSION}"
-ARG EWDK_BASE_LIB_PATHS="${EWDK_SDK_DIR_WIN_PATH}\Lib\${SDK_WDK_VERSION}"
+ARG EWDK_PROGRAM_FILES_PATH="${EWDK_WIN_PATH}\Program Files"
+ARG EWDK_SDK_DIR_WIN_PATH="${EWDK_PROGRAM_FILES_PATH}\Windows Kits\10"
+ARG EWDK_BASE_INCLUDE_PATH="${EWDK_SDK_DIR_WIN_PATH}\Include\\${SDK_WDK_VERSION}"
+ARG EWDK_BASE_LIB_PATHS="${EWDK_SDK_DIR_WIN_PATH}\Lib\\${SDK_WDK_VERSION}"
 
 ARG EBIP="${EWDK_BASE_INCLUDE_PATH}"
+ARG MSVS="${EWDK_PROGRAM_FILES_PATH}\Microsoft Visual Studio 14.0\VC"
 
-ARG EWDK_INCLUDE_PATHS="${EBIP}\km;${EBIP}\shared;${EBIP}\ucrt;${EBIP}\um;"
-ARG EWDK_LIB_PATHS="${EWDK_BASE_LIB_PATHS}\um\x64;${EWDK_BASE_LIB_PATHS}\ucrt\x64"
+ARG EWDK_INCLUDE_PATHS="${EBIP}\km;${EBIP}\shared;${EBIP}\ucrt;${EBIP}\um;${MSVS}\atlmfc\include;${MSVS}\include"
+ARG EWDK_LIB_PATHS="${EWDK_BASE_LIB_PATHS}\um\x64;${EWDK_BASE_LIB_PATHS}\ucrt\x64;${MSVS}\lib\amd64;${MSVS}\redist\x64\Microsoft.VC140.CRT;${MSVS}\atlmfc\lib\amd64"
 
 ARG EWDK_ZIP=EnterpriseWDK_rs1_release_14393_20160715-1616.zip
 ARG EWDK_URL=https://go.microsoft.com/fwlink/p/?LinkID=699461
@@ -75,8 +79,7 @@ RUN wget --content-disposition ${EWDK_URL} && \
     sed -i 91d ${MISC_TOOLS_PATH}/EWDK/BuildEnv/SetupBuildEnv.cmd && \
     rm -vrf ~/.wine/drive_c/windows/Installer/*; \
     find ~/'.wine/drive_c/' -name '*.vsix' -type d -print0 | xargs -0 rm -vrf; \
-    find ~/'.wine/drive_c/Program Files (x86)/Windows Kits/10/Lib' -name 'arm*' -type d -print0 | xargs -0 rm -vrf; \
-    find ~/'.wine/drive_c/Program Files (x86)/Microsoft Visual Studio 14.0' -name 'arm*' -type d -print0 | xargs -0 rm -vrf; \
+    find ~/'.wine/drive_c/' -name 'arm*' -type d -print0 | xargs -0 rm -vrf; \
     find ~/.wine -type f -name '*.pdb' -print0 | xargs -0 rm -vrf; \
     wine reg add "${PATH_REGISTRY_KEY}"\
              /v INCLUDE \
@@ -158,16 +161,26 @@ RUN wget ${PERL_URL} && \
 ARG CMAKE_VER=3.26.2
 ARG CMAKE_MSI=cmake-${CMAKE_VER}-windows-x86_64.msi
 ARG CMAKE_URL=https://github.com/Kitware/CMake/releases/download/v${CMAKE_VER}/${CMAKE_MSI}
+ARG CMAKE_INSTALL_OPTS="ADD_CMAKE_TO_PATH=System "
 RUN wget ${CMAKE_URL} && \
-    ${MSI_INSTALL} ${CMAKE_MSI} ADD_CMAKE_TO_PATH=System ${MSI_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
+    ${MSI_INSTALL} ${CMAKE_MSI} ${CMAKE_INSTALL_OPTS} ${MSI_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
     rm ${CMAKE_MSI}
 
 
 ARG NSIS_EXE=nsis-3.08-setup.exe
 ARG NSIS_URL=https://prdownloads.sourceforge.net/nsis/${NSIS_EXE}
+ARG NSIS_INSTALL_OPTS="/S /NCRC"
 RUN wget ${NSIS_URL} && \
-    ${WINE_START} ${NSIS_EXE} /S /NCRC && ${WINE_END} && ${CLEANUP} && \
+    ${WINE_START} ${NSIS_EXE} ${NSIS_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
     rm ${NSIS_EXE}
+
+
+ARG WIX_EXE=wix311.exe
+ARG WIX_URL=https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/${WIX_EXE}
+ARG WIX_INSTALL_OPTS="/install /quiet /norestart"
+RUN wget ${WIX_URL} && \
+    ${WINE_START} ${WIX_EXE} ${WIX_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
+    rm ${WIX_EXE}
 
 
 ARG DEPENDENCIES_VER=1.11.1
