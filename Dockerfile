@@ -175,12 +175,11 @@ RUN wget ${NSIS_URL} && \
     rm ${NSIS_EXE}
 
 
-#ARG WIX_EXE=wix311.exe
-#ARG WIX_URL=https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/${WIX_EXE}
-#ARG WIX_INSTALL_OPTS="/install /quiet /norestart"
-#RUN wget ${WIX_URL} && \
-#    ${WINE_START} ${WIX_EXE} ${WIX_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
-#    rm ${WIX_EXE}
+ARG WIX_ZIP=wix311-binaries.zip
+ARG WIX_URL=https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/${WIX_ZIP}
+RUN wget ${WIX_URL} && \
+    unzip -d ${MISC_TOOLS_PATH} ${WIX_ZIP} && \
+    rm ${WIX_ZIP}
 
 
 ARG DEPENDENCIES_VER=1.11.1
