@@ -24,6 +24,7 @@ RUN dpkg --add-architecture i386 && \
                    unzip \
                    file \
                    dos2unix \
+                   git \
                    vim \
                    less \
                    locales \
