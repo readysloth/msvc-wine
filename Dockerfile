@@ -4,12 +4,16 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN dpkg --add-architecture i386 && \
     apt update -y && \
-    apt install -y wget && \
+    apt install -y wget gnupg && \
     mkdir -pm755 /etc/apt/keyrings && \
     wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key && \
     wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/focal/winehq-focal.sources && \
-    apt update -y && \
-    apt install -y --install-recommends winehq-staging \
+    echo "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu bionic main" >> /etc/apt/sources.list && \
+    echo "deb-src http://ppa.launchpad.net/apt-fast/stable/ubuntu bionic main" >> /etc/apt/sources.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B && \
+    apt update -y && apt -y install apt-fast && \
+    apt install -y aria2 && \
+    apt-fast install -y --install-recommends winehq-staging \
                    cabextract \
                    winbind \
                    libvulkan1 \
@@ -28,10 +32,6 @@ RUN dpkg --add-architecture i386 && \
   chmod +x winetricks && \
   mv winetricks /usr/bin
 
-ENV DISPLAY=:0
-ENV WINEARCH=win64
-ENV WINDEBUG=-all
-
 ARG WINE_START="wine cmd /c start /wait"
 ARG WINE_END="wineserver --wait"
 ARG CLEANUP_DIRS="/root/.wine/drive_c/users/root/Temp/ /win_pkg_cache"
@@ -39,11 +39,18 @@ ARG CLEANUP="find -L ${CLEANUP_DIRS} -maxdepth 1 -mindepth 1 -exec rm -vrf {} ;"
 ARG MSI_INSTALL="${WINE_START} msiexec /i"
 ARG MSI_INSTALL_OPTS="/qn"
 ARG PATH_REGISTRY_KEY="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
-ARG MISC_TOOLS_PATH=/root/.wine/drive_c/dev_tools
-ARG ARCHIVES_BASE_URL=https://github.com/readysloth/msvc-wine/releases/download
-ARG SDK_WDK_VERSION=10.0.14393.0
+ARG MISC_TOOLS_PATH="/root/.wine/drive_c/dev_tools"
+ARG ARCHIVES_BASE_URL="https://github.com/readysloth/msvc-wine/releases/download"
+ARG SDK_WDK_VERSION="10.0.14393.0"
 ARG WIN_MISC_TOOLS_PATH="C:\dev_tools;C\MinGW\msys\1.0\bin;"
+ARG WGET="aria2c"
+
+ENV DISPLAY=:0
+ENV WINEARCH=win64
+ENV WINDEBUG=-all
 ENV WINEPATH="${WIN_MISC_TOOLS_PATH}"
+ENV WINETRICKS_DOWNLOADER="${WGET}"
+
 
 RUN WINEDLLOVERRIDES=mscoree=d wineboot && ${WINE_END} && \
     ln -s "/root/.wine/drive_c/ProgramData/Package Cache" /win_pkg_cache && \
@@ -73,7 +80,7 @@ ARG EWDK_LIB_PATHS="${EWDK_BASE_LIB_PATHS}\um\x64;${EWDK_BASE_LIB_PATHS}\ucrt\x6
 
 ARG EWDK_ZIP=EnterpriseWDK_rs1_release_14393_20160715-1616.zip
 ARG EWDK_URL=https://go.microsoft.com/fwlink/p/?LinkID=699461
-RUN wget --content-disposition ${EWDK_URL} && \
+RUN ${WGET} ${EWDK_URL} && \
     mkdir ${MISC_TOOLS_PATH}/EWDK && \
     unzip -d ${MISC_TOOLS_PATH}/EWDK ${EWDK_ZIP} && \
     sed -i 91d ${MISC_TOOLS_PATH}/EWDK/BuildEnv/SetupBuildEnv.cmd && \
@@ -96,7 +103,7 @@ RUN wget --content-disposition ${EWDK_URL} && \
 ARG POWERSHELL_VER=7.3.3
 ARG POWERSHELL_MSI=PowerShell-${POWERSHELL_VER}-win-x64.msi
 ARG POWERSHELL_URL=https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VER}/${POWERSHELL_MSI}
-RUN wget ${POWERSHELL_URL} && \
+RUN ${WGET} ${POWERSHELL_URL} && \
     ${MSI_INSTALL} ${POWERSHELL_MSI} ALL_USERS=1 ADD_PATH=1 USE_MU=0 ENABLE_MU=0 ${MSI_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
     rm ${POWERSHELL_MSI}
 
@@ -113,7 +120,7 @@ ARG LLVM_VER=16.0.0
 ARG LLVM_EXE=LLVM-${LLVM_VER}-win64.exe
 ARG LLVM_URL=https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VER}/${LLVM_EXE}
 ARG LLVM_INSTALL_OPTS="/S"
-RUN wget ${LLVM_URL} && \
+RUN ${WGET} ${LLVM_URL} && \
     echo "${WINE_START} ${LLVM_EXE} ${LLVM_INSTALL_OPTS}" && \
     ${WINE_START} ${LLVM_EXE} ${LLVM_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
     export WIN_PATH="$(wine reg query "${PATH_REGISTRY_KEY}" /v Path | \
@@ -134,7 +141,7 @@ ARG PYTHON_VER=3.10.10
 ARG PYTHON_EXE=python-${PYTHON_VER}-amd64.exe
 ARG PYTHON_URL=https://www.python.org/ftp/python/${PYTHON_VER}/${PYTHON_EXE}
 ARG PYTHON_INSTALL_OPTS='/quiet InstallAllUsers=1 CompileAll=1 PrependPath=1 Include_launcher=1'
-RUN wget ${PYTHON_URL} && \
+RUN ${WGET} ${PYTHON_URL} && \
     echo "${WINE_START} ${PYTHON_EXE} ${PYTHON_INSTALL_OPTS}" && \
     ${WINE_START} ${PYTHON_EXE} ${PYTHON_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
     rm ${PYTHON_EXE}
@@ -145,7 +152,7 @@ ARG GIT_EXE=Git-${GIT_VER}-64-bit.exe
 ARG GIT_URL=https://github.com/git-for-windows/git/releases/download/v${GIT_VER}.windows.1/${GIT_EXE}
 ARG GIT_INSTALL_OPTS='/VERYSILENT /NORESTART /NOCANCEL /SP- /ALLUSERS /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS="ext\shellhere,assoc,assoc_sh"'
 # Git hangs on post-install
-RUN wget ${GIT_URL} && \
+RUN ${WGET} ${GIT_URL} && \
     timeout 5m ${WINE_START} ${GIT_EXE} ${GIT_INSTALL_OPTS}; wineserver -k 9 && \
     rm ${GIT_EXE}
 
@@ -153,7 +160,7 @@ RUN wget ${GIT_URL} && \
 ARG PERL_VER=5.32.1.1
 ARG PERL_MSI=strawberry-perl-${PERL_VER}-64bit.msi
 ARG PERL_URL=https://strawberryperl.com/download/${PERL_VER}/${PERL_MSI}
-RUN wget ${PERL_URL} && \
+RUN ${WGET} ${PERL_URL} && \
     ${MSI_INSTALL} ${PERL_MSI} ${MSI_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
     rm ${PERL_MSI}
 
@@ -162,7 +169,7 @@ ARG CMAKE_VER=3.26.2
 ARG CMAKE_MSI=cmake-${CMAKE_VER}-windows-x86_64.msi
 ARG CMAKE_URL=https://github.com/Kitware/CMake/releases/download/v${CMAKE_VER}/${CMAKE_MSI}
 ARG CMAKE_INSTALL_OPTS="ADD_CMAKE_TO_PATH=System "
-RUN wget ${CMAKE_URL} && \
+RUN ${WGET} ${CMAKE_URL} && \
     ${MSI_INSTALL} ${CMAKE_MSI} ${CMAKE_INSTALL_OPTS} ${MSI_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
     rm ${CMAKE_MSI}
 
@@ -170,14 +177,14 @@ RUN wget ${CMAKE_URL} && \
 ARG NSIS_EXE=nsis-3.08-setup.exe
 ARG NSIS_URL=https://prdownloads.sourceforge.net/nsis/${NSIS_EXE}
 ARG NSIS_INSTALL_OPTS="/S /NCRC"
-RUN wget ${NSIS_URL} && \
+RUN ${WGET} ${NSIS_URL} && \
     ${WINE_START} ${NSIS_EXE} ${NSIS_INSTALL_OPTS} && ${WINE_END} && ${CLEANUP} && \
     rm ${NSIS_EXE}
 
 
 ARG WIX_ZIP=wix311-binaries.zip
 ARG WIX_URL=https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/${WIX_ZIP}
-RUN wget ${WIX_URL} && \
+RUN ${WGET} ${WIX_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${WIX_ZIP} && \
     rm ${WIX_ZIP}
 
@@ -185,14 +192,14 @@ RUN wget ${WIX_URL} && \
 ARG DEPENDENCIES_VER=1.11.1
 ARG DEPENDENCIES_ZIP=Dependencies_x64_Release.zip
 ARG DEPENDENCIES_URL=https://github.com/lucasg/Dependencies/releases/download/v${DEPENDENCIES_VER}/${DEPENDENCIES_ZIP}
-RUN wget ${DEPENDENCIES_URL} && \
+RUN ${WGET} ${DEPENDENCIES_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${DEPENDENCIES_ZIP} && \
     rm ${DEPENDENCIES_ZIP}
 
 
 ARG DEPENDENCY_WALKER_ZIP=depends22_x64.zip
 ARG DEPENDENCY_WALKER_URL=http://www.dependencywalker.com/${DEPENDENCY_WALKER_ZIP}
-RUN wget ${DEPENDENCY_WALKER_URL} && \
+RUN ${WGET} ${DEPENDENCY_WALKER_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${DEPENDENCY_WALKER_ZIP} && \
     rm ${DEPENDENCY_WALKER_ZIP}
 
@@ -200,7 +207,7 @@ RUN wget ${DEPENDENCY_WALKER_URL} && \
 ARG NINJA_VER=1.11.1
 ARG NINJA_ZIP=ninja-win.zip
 ARG NINJA_URL=https://github.com/ninja-build/ninja/releases/download/v${NINJA_VER}/ninja-win.zip
-RUN wget ${NINJA_URL} && \
+RUN ${WGET} ${NINJA_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${NINJA_ZIP} && \
     rm ${NINJA_ZIP}
 
@@ -208,7 +215,7 @@ RUN wget ${NINJA_URL} && \
 ARG W64DEVKIT_VER=1.18.0
 ARG W64DEVKIT_ZIP=w64devkit-${W64DEVKIT_VER}.zip
 ARG W64DEVKIT_URL=https://github.com/skeeto/w64devkit/releases/download/v${W64DEVKIT_VER}/${W64DEVKIT_ZIP}
-RUN wget ${W64DEVKIT_URL} && \
+RUN ${WGET} ${W64DEVKIT_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${W64DEVKIT_ZIP} && \
     rm ${W64DEVKIT_ZIP}
 
@@ -216,14 +223,14 @@ RUN wget ${W64DEVKIT_URL} && \
 ARG DNSPY_VER=6.3.0
 ARG DNSPY_ZIP=dnSpy-net-win64.zip
 ARG DNSPY_URL=https://github.com/dnSpyEx/dnSpy/releases/download/v${DNSPY_VER}/${DNSPY_ZIP}
-RUN wget ${DNSPY_URL} && \
+RUN ${WGET} ${DNSPY_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${DNSPY_ZIP} && \
     rm ${DNSPY_ZIP}
 
 
 ARG X64DBG_ZIP=snapshot_2023-04-15_16-57.zip
 ARG X64DBG_URL=https://github.com/x64dbg/x64dbg/releases/download/snapshot/${X64DBG_ZIP}
-RUN wget ${X64DBG_URL} && \
+RUN ${WGET} ${X64DBG_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${X64DBG_ZIP} && \
     rm ${X64DBG_ZIP}
 
@@ -234,7 +241,7 @@ RUN ${WINE_START} pip install cmake-converter && ${WINE_END}
 
 
 ARG JFROG_SCRIPT="iwr https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-cli-windows-amd64/jf.exe -OutFile $env:SYSTEMROOT\system32\jf.exe"
-RUN wget 'https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-cli-windows-amd64/jf.exe' \
+RUN ${WGET} 'https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-cli-windows-amd64/jf.exe' \
     -O ${MISC_TOOLS_PATH}/jf.exe && \
     bash -c "cp ${MISC_TOOLS_PATH}/{jf,jfrog}.exe"
 
