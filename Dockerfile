@@ -246,6 +246,7 @@ RUN wget 'https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-
     -O ${MISC_TOOLS_PATH}/jf.exe && \
     bash -c "cp ${MISC_TOOLS_PATH}/{jf,jfrog}.exe"
 
+COPY cmd-win.exe ${MISC_TOOLS_PATH}
 
 ENV WINEDEBUG=-all
 
