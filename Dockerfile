@@ -235,7 +235,7 @@ RUN ${WGET} ${X64DBG_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${X64DBG_ZIP} && \
     rm ${X64DBG_ZIP}
 
-ENV WINEPATH="${WINEPATH};${MISC_TOOLS_PATH}\release"
+ENV WINEPATH="${WINEPATH};C:\dev_tools\release"
 
 
 RUN ${WINE_START} pip install cmake-converter && ${WINE_END}
