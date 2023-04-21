@@ -221,6 +221,15 @@ RUN wget ${DNSPY_URL} && \
     rm ${DNSPY_ZIP}
 
 
+ARG X64DBG_ZIP=snapshot_2023-04-15_16-57.zip
+ARG X64DBG_URL=https://github.com/x64dbg/x64dbg/releases/download/snapshot/${X64DBG_ZIP}
+RUN wget ${X64DBG_URL} && \
+    unzip -d ${MISC_TOOLS_PATH} ${X64DBG_ZIP} && \
+    rm ${X64DBG_ZIP}
+
+ENV WINEPATH="${WINEPATH};${MISC_TOOLS_PATH}\release"
+
+
 RUN ${WINE_START} pip install cmake-converter && ${WINE_END}
 
 
