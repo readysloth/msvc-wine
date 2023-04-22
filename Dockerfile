@@ -43,7 +43,7 @@ ARG PATH_REGISTRY_KEY="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Sessi
 ARG MISC_TOOLS_PATH="/root/.wine/drive_c/dev_tools"
 ARG ARCHIVES_BASE_URL="https://github.com/readysloth/msvc-wine/releases/download"
 ARG SDK_WDK_VERSION="10.0.14393.0"
-ARG WIN_MISC_TOOLS_PATH="C:\dev_tools;C\MinGW\msys\1.0\bin;"
+ARG WIN_MISC_TOOLS_PATH="C:\dev_tools"
 ARG WGET="aria2c"
 
 ENV DISPLAY=:0
@@ -65,6 +65,18 @@ RUN winetricks -q -f mfc42 && ${WINE_END} && ${CLEANUP}
 RUN winetricks -q -f mingw && ${WINE_END} && ${CLEANUP}
 RUN winecfg /v win10 && ${WINE_END} && ${CLEANUP}
 RUN mkdir ${MISC_TOOLS_PATH}
+
+
+RUN export WIN_PATH="$(wine reg query "${PATH_REGISTRY_KEY}" /v Path | \
+                       dos2unix | \
+                       grep -i PATH | \
+                       awk -F'REG_EXPAND_SZ *' '{print $2}' | \
+                       tr -dc '[[:print:]]')" && \
+    wine reg add "${PATH_REGISTRY_KEY}"\
+             /v Path \
+             /t REG_EXPAND_SZ \
+             /d "${WIN_PATH};C\\MinGW\\msys\\1.0\\bin" /f && \
+    ${WINE_END}
 
 
 ARG EWDK_WIN_PATH="${WIN_MISC_TOOLS_PATH}\EWDK"
@@ -233,9 +245,17 @@ ARG X64DBG_ZIP=snapshot_2023-04-15_16-57.zip
 ARG X64DBG_URL=https://github.com/x64dbg/x64dbg/releases/download/snapshot/${X64DBG_ZIP}
 RUN ${WGET} ${X64DBG_URL} && \
     unzip -d ${MISC_TOOLS_PATH} ${X64DBG_ZIP} && \
-    rm ${X64DBG_ZIP}
-
-ENV WINEPATH="${WINEPATH};C:\dev_tools\release"
+    rm ${X64DBG_ZIP} && \
+    export WIN_PATH="$(wine reg query "${PATH_REGISTRY_KEY}" /v Path | \
+                       dos2unix | \
+                       grep -i PATH | \
+                       awk -F'REG_EXPAND_SZ *' '{print $2}' | \
+                       tr -dc '[[:print:]]')" && \
+    wine reg add "${PATH_REGISTRY_KEY}"\
+             /v Path \
+             /t REG_EXPAND_SZ \
+             /d "${WIN_PATH};C:\\dev_tools\\release" /f && \
+    ${WINE_END}
 
 
 RUN ${WINE_START} pip install cmake-converter && ${WINE_END}
