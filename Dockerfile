@@ -43,13 +43,12 @@ ARG PATH_REGISTRY_KEY="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Sessi
 ARG MISC_TOOLS_PATH="/root/.wine/drive_c/dev_tools"
 ARG ARCHIVES_BASE_URL="https://github.com/readysloth/msvc-wine/releases/download"
 ARG SDK_WDK_VERSION="10.0.14393.0"
-ARG WIN_MISC_TOOLS_PATH="C:\dev_tools"
+ARG WIN_MISC_TOOLS_PATH="C:\dev_tools;"
 ARG WGET="aria2c"
 
 ENV DISPLAY=:0
 ENV WINEARCH=win64
 ENV WINDEBUG=-all
-ENV WINEPATH="${WIN_MISC_TOOLS_PATH}"
 ENV WINETRICKS_DOWNLOADER="${WGET}"
 
 
@@ -75,7 +74,7 @@ RUN export WIN_PATH="$(wine reg query "${PATH_REGISTRY_KEY}" /v Path | \
     wine reg add "${PATH_REGISTRY_KEY}"\
              /v Path \
              /t REG_EXPAND_SZ \
-             /d "${WIN_PATH};C\\MinGW\\msys\\1.0\\bin" /f && \
+             /d "${WIN_PATH};${WIN_MISC_TOOLS_PATH};C\\MinGW\\msys\\1.0\\bin" /f && \
     ${WINE_END}
 
 
@@ -267,6 +266,7 @@ RUN wget 'https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-
     bash -c "cp ${MISC_TOOLS_PATH}/{jf,jfrog}.exe"
 
 COPY cmd-win.exe ${MISC_TOOLS_PATH}
+COPY cmd-reactos.exe ${MISC_TOOLS_PATH}
 
 ENV WINEDEBUG=-all
 
