@@ -11,3 +11,8 @@ call MSBuild, CL and etc.
 
 If you encounter problems with encoding of builded programs, then change encoding via `export LANG`
 before launching wine
+
+# which cmd?
+
+CMD implemented by WINE struggle to run complex batch scripts, it is possible to overcome by installing CMD.exe from ReactOS,
+so, if you encounter problems, use `wine cmd-reactos`
