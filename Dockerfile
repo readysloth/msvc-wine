@@ -43,7 +43,7 @@ ARG PATH_REGISTRY_KEY="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Sessi
 ARG MISC_TOOLS_PATH="/root/.wine/drive_c/dev_tools"
 ARG ARCHIVES_BASE_URL="https://github.com/readysloth/msvc-wine/releases/download"
 ARG SDK_WDK_VERSION="10.0.14393.0"
-ARG WIN_MISC_TOOLS_PATH="C:\dev_tools;"
+ARG WIN_MISC_TOOLS_PATH="C:\dev_tools"
 ARG WGET="aria2c"
 
 ENV DISPLAY=:0
