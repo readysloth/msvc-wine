@@ -74,7 +74,7 @@ RUN export WIN_PATH="$(wine reg query "${PATH_REGISTRY_KEY}" /v Path | \
     wine reg add "${PATH_REGISTRY_KEY}"\
              /v Path \
              /t REG_EXPAND_SZ \
-             /d "${WIN_PATH};${WIN_MISC_TOOLS_PATH};C\\MinGW\\msys\\1.0\\bin" /f && \
+             /d "${WIN_PATH};${WIN_MISC_TOOLS_PATH};C:\\MinGW\\msys\\1.0\\bin" /f && \
     ${WINE_END}
 
 
