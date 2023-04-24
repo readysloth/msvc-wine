@@ -78,40 +78,6 @@ RUN export WIN_PATH="$(wine reg query "${PATH_REGISTRY_KEY}" /v Path | \
     ${WINE_END}
 
 
-ARG EWDK_WIN_PATH="${WIN_MISC_TOOLS_PATH}\EWDK"
-ARG EWDK_PROGRAM_FILES_PATH="${EWDK_WIN_PATH}\Program Files"
-ARG EWDK_SDK_DIR_WIN_PATH="${EWDK_PROGRAM_FILES_PATH}\Windows Kits\10"
-ARG EWDK_BASE_INCLUDE_PATH="${EWDK_SDK_DIR_WIN_PATH}\Include\\${SDK_WDK_VERSION}"
-ARG EWDK_BASE_LIB_PATHS="${EWDK_SDK_DIR_WIN_PATH}\Lib\\${SDK_WDK_VERSION}"
-
-ARG EBIP="${EWDK_BASE_INCLUDE_PATH}"
-ARG MSVS="${EWDK_PROGRAM_FILES_PATH}\Microsoft Visual Studio 14.0\VC"
-
-ARG EWDK_INCLUDE_PATHS="${EBIP}\km;${EBIP}\shared;${EBIP}\ucrt;${EBIP}\um;${MSVS}\atlmfc\include;${MSVS}\include"
-ARG EWDK_LIB_PATHS="${EWDK_BASE_LIB_PATHS}\um\x64;${EWDK_BASE_LIB_PATHS}\ucrt\x64;${MSVS}\lib\amd64;${MSVS}\redist\x64\Microsoft.VC140.CRT;${MSVS}\atlmfc\lib\amd64"
-
-ARG EWDK_ZIP=EnterpriseWDK_rs1_release_14393_20160715-1616.zip
-ARG EWDK_URL=https://go.microsoft.com/fwlink/p/?LinkID=699461
-RUN ${WGET} ${EWDK_URL} && \
-    mkdir ${MISC_TOOLS_PATH}/EWDK && \
-    unzip -d ${MISC_TOOLS_PATH}/EWDK ${EWDK_ZIP} && \
-    sed -i 91d ${MISC_TOOLS_PATH}/EWDK/BuildEnv/SetupBuildEnv.cmd && \
-    rm -vrf ~/.wine/drive_c/windows/Installer/*; \
-    find ~/'.wine/drive_c/' -name '*.vsix' -type d -print0 | xargs -0 rm -vrf; \
-    find ~/'.wine/drive_c/' -name 'arm*' -type d -print0 | xargs -0 rm -vrf; \
-    find ~/.wine -type f -name '*.pdb' -print0 | xargs -0 rm -vrf; \
-    wine reg add "${PATH_REGISTRY_KEY}"\
-             /v INCLUDE \
-             /t REG_EXPAND_SZ \
-             /d "${EWDK_INCLUDE_PATHS}" /f && \
-    wine reg add "${PATH_REGISTRY_KEY}"\
-             /v LIB \
-             /t REG_EXPAND_SZ \
-             /d "${EWDK_LIB_PATHS}" /f && \
-    ${WINE_END} && \
-    rm ${EWDK_ZIP}
-
-
 ARG POWERSHELL_VER=7.3.3
 ARG POWERSHELL_MSI=PowerShell-${POWERSHELL_VER}-win-x64.msi
 ARG POWERSHELL_URL=https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VER}/${POWERSHELL_MSI}
@@ -272,5 +238,39 @@ ENV WINEDEBUG=-all
 
 RUN echo "wine cmd /c ${MISC_TOOLS_PATH}/w64devkit/w64devkit.exe" > /startup.sh && \
     chmod +x /startup.sh
+
+
+ARG EWDK_WIN_PATH="${WIN_MISC_TOOLS_PATH}\EWDK"
+ARG EWDK_PROGRAM_FILES_PATH="${EWDK_WIN_PATH}\Program Files"
+ARG EWDK_SDK_DIR_WIN_PATH="${EWDK_PROGRAM_FILES_PATH}\Windows Kits\10"
+ARG EWDK_BASE_INCLUDE_PATH="${EWDK_SDK_DIR_WIN_PATH}\Include\\${SDK_WDK_VERSION}"
+ARG EWDK_BASE_LIB_PATHS="${EWDK_SDK_DIR_WIN_PATH}\Lib\\${SDK_WDK_VERSION}"
+
+ARG EBIP="${EWDK_BASE_INCLUDE_PATH}"
+ARG MSVS="${EWDK_PROGRAM_FILES_PATH}\Microsoft Visual Studio 14.0\VC"
+
+ARG EWDK_INCLUDE_PATHS="${EBIP}\km;${EBIP}\shared;${EBIP}\ucrt;${EBIP}\um;${MSVS}\atlmfc\include;${MSVS}\include"
+ARG EWDK_LIB_PATHS="${EWDK_BASE_LIB_PATHS}\um\x64;${EWDK_BASE_LIB_PATHS}\ucrt\x64;${MSVS}\lib\amd64;${MSVS}\redist\x64\Microsoft.VC140.CRT;${MSVS}\atlmfc\lib\amd64"
+
+ARG EWDK_ZIP=EnterpriseWDK_rs1_release_14393_20160715-1616.zip
+ARG EWDK_URL=https://go.microsoft.com/fwlink/p/?LinkID=699461
+RUN ${WGET} ${EWDK_URL} && \
+    mkdir ${MISC_TOOLS_PATH}/EWDK && \
+    unzip -d ${MISC_TOOLS_PATH}/EWDK ${EWDK_ZIP} && \
+    sed -i 91d ${MISC_TOOLS_PATH}/EWDK/BuildEnv/SetupBuildEnv.cmd && \
+    rm -vrf ~/.wine/drive_c/windows/Installer/*; \
+    find ~/'.wine/drive_c/' -name '*.vsix' -type d -print0 | xargs -0 rm -vrf; \
+    find ~/'.wine/drive_c/' -name 'arm*' -type d -print0 | xargs -0 rm -vrf; \
+    find ~/.wine -type f -name '*.pdb' -print0 | xargs -0 rm -vrf; \
+    wine reg add "${PATH_REGISTRY_KEY}"\
+             /v INCLUDE \
+             /t REG_EXPAND_SZ \
+             /d "${EWDK_INCLUDE_PATHS}" /f && \
+    wine reg add "${PATH_REGISTRY_KEY}"\
+             /v LIB \
+             /t REG_EXPAND_SZ \
+             /d "${EWDK_LIB_PATHS}" /f && \
+    ${WINE_END} && \
+    rm ${EWDK_ZIP}
 
 ENTRYPOINT /startup.sh
