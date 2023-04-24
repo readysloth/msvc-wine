@@ -69,7 +69,7 @@ RUN mkdir ${MISC_TOOLS_PATH}
 RUN export WIN_PATH="$(wine reg query "${PATH_REGISTRY_KEY}" /v Path | \
                        dos2unix | \
                        grep -i PATH | \
-                       awk -F'REG_EXPAND_SZ *' '{print $2}' | \
+                       awk -F'REG_[^[:space:]]*SZ[[:space:]]*' '{print $2}' | \
                        tr -dc '[[:print:]]')" && \
     wine reg add "${PATH_REGISTRY_KEY}"\
              /v Path \
@@ -104,7 +104,7 @@ RUN ${WGET} ${LLVM_URL} && \
     export WIN_PATH="$(wine reg query "${PATH_REGISTRY_KEY}" /v Path | \
                        dos2unix | \
                        grep -i PATH | \
-                       awk -F'REG_EXPAND_SZ *' '{print $2}' | \
+                       awk -F'REG_[^[:space:]]*SZ[[:space:]]*' '{print $2}' | \
                        tr -dc '[[:print:]]')" && \
     wine reg add "${PATH_REGISTRY_KEY}"\
              /v Path \
@@ -214,7 +214,7 @@ RUN ${WGET} ${X64DBG_URL} && \
     export WIN_PATH="$(wine reg query "${PATH_REGISTRY_KEY}" /v Path | \
                        dos2unix | \
                        grep -i PATH | \
-                       awk -F'REG_EXPAND_SZ *' '{print $2}' | \
+                       awk -F'REG_[^[:space:]]*SZ[[:space:]]*' '{print $2}' | \
                        tr -dc '[[:print:]]')" && \
     wine reg add "${PATH_REGISTRY_KEY}"\
              /v Path \
