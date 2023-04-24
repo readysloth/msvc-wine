@@ -42,7 +42,6 @@ ARG MSI_INSTALL_OPTS="/qn"
 ARG PATH_REGISTRY_KEY="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
 ARG MISC_TOOLS_PATH="/root/.wine/drive_c/dev_tools"
 ARG ARCHIVES_BASE_URL="https://github.com/readysloth/msvc-wine/releases/download"
-ARG SDK_WDK_VERSION="10.0.14393.0"
 ARG WIN_MISC_TOOLS_PATH="C:\dev_tools"
 ARG WGET="aria2c"
 
@@ -240,6 +239,7 @@ RUN echo "wine cmd /c ${MISC_TOOLS_PATH}/w64devkit/w64devkit.exe" > /startup.sh 
     chmod +x /startup.sh
 
 
+ARG SDK_WDK_VERSION="10.0.14393.0"
 ARG EWDK_WIN_PATH="${WIN_MISC_TOOLS_PATH}\EWDK"
 ARG EWDK_PROGRAM_FILES_PATH="${EWDK_WIN_PATH}\Program Files"
 ARG EWDK_SDK_DIR_WIN_PATH="${EWDK_PROGRAM_FILES_PATH}\Windows Kits\10"
