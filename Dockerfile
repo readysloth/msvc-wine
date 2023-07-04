@@ -273,4 +273,7 @@ RUN ${WGET} ${EWDK_URL} && \
     ${WINE_END} && \
     rm ${EWDK_ZIP}
 
+ENV UseEnv=true
+ENV WixInstallPath=${WIN_MISC_TOOLS_PATH}
+
 ENTRYPOINT /startup.sh
